@@ -57,7 +57,7 @@ def enviar_emails():
 
     for caminho_do_arquivo in file_paths: #para cada caminho de arquivo em filepaths vai definir os seguintes elementos 
         filename = os.path.basename(caminho_do_arquivo) #obtem o nome do arquico
-        match = re.match(r'(.+?)_.+', filename) #usa uma expressão regular para extrair o email do nome do arquivo
+        match = re.match(r'.+?_(.+?@\w+\.\w+)',filename) #usa uma expressão regular para extrair o email do nome do arquivo
         if match:
             email_destinatario = match.group(1)
             enviaremailcomarquivo(email_remetente, senha_remetente, email_destinatario, assunto, body, caminho_do_arquivo )
