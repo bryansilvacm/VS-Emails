@@ -50,8 +50,8 @@ def enviaremailcomarquivo(email_remetente, senha_remetente, email_destinatario, 
 #função para enviar vários emails
 
 def enviar_emails():
-    email_remetente = 'brayanaugusto2003@gmail.com'
-    senha_remetente = 'xjrw iyjz vswk euro'
+    email_remetente = 'silolencois@camda.com.br'
+    senha_remetente = 'silosojalencois'
     assunto = 'COBRANÇA DE SERVIÇOS'
     body = message_text.get("1.0", "end-1c")
 
