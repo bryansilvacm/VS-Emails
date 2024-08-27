@@ -7,8 +7,13 @@ import os # biblioteca para interagir com o sistema operacional manipulando arqu
 import re
 from tkinter import Tk, Label, Text, Button, filedialog # componentes para criar interfaces gráficas
 
+totalArquivos = 0
+
 # Função para enviar email com anexos
 def enviaremailcomarquivos(email_remetente, senha_remetente, email_destinatario, assunto, body, arquivos):
+    
+    global totalArquivos
+    
     smtp_server = 'smtp.gmail.com' # acessando o servidor do gmail
     smtp_port = 587 # acessando a porta
 
@@ -30,6 +35,7 @@ def enviaremailcomarquivos(email_remetente, senha_remetente, email_destinatario,
                 encoders.encode_base64(part) # codifica o payload em base64 (necessário para anexos em emails)
                 part.add_header('Content-Disposition', f'attachment; filename={filename}') # adiciona um cabeçalho de disposição de conteúdo para indicar que é um anexo
                 msg.attach(part) # adiciona a parte MIME ao email
+                totalArquivos += 1
         except FileNotFoundError: # caso não consiga abrir o arquivo, exibe mensagem de erro
             print(f"Erro: Arquivo {caminho_do_arquivo} não encontrado.")
             continue
@@ -41,9 +47,11 @@ def enviaremailcomarquivos(email_remetente, senha_remetente, email_destinatario,
             text = msg.as_string() # transforma a mensagem em tipo string
             server.sendmail(email_remetente, email_destinatario, text) # envia o email
             print(f'Email enviado com sucesso para {email_destinatario}')
+
+
     except Exception as e: # caso haja erros, imprime mensagem de falha
         print(f'Falha ao enviar email para {email_destinatario}: {e}')
-
+    
 # Função para enviar vários emails
 def enviar_emails():
     email_remetente = 'silolencois@camda.com.br'
@@ -55,10 +63,10 @@ def enviar_emails():
 
     for caminho_do_arquivo in file_paths:
         filename = os.path.basename(caminho_do_arquivo)
-        match = re.match(r'([a-zA-Z]+\d+)_([a-zA-Z0-9]+)@([a-zA-Z]+\.\w+)', filename) # usa uma expressão regular para extrair o email do nome do arquivo
+        match = re.match(r'([a-zA-Z0-9]+)@([a-zA-Z]+\.\w+)_([a-zA-Z]+\d+)', filename) # usa uma expressão regular para extrair o email do nome do arquivo
         if match:
-            part1 = match.group(2)
-            part2 = match.group(3)
+            part1 = match.group(1)
+            part2 = match.group(2)
 
             email_destinatario = part1 + '@' + part2
 
@@ -70,6 +78,8 @@ def enviar_emails():
 
     for email, arquivos in emails_to_files.items():
         enviaremailcomarquivos(email_remetente, senha_remetente, email, assunto, body, arquivos)
+
+    print(f'Foram enviados {totalArquivos} arquivos com sucesso')
 
 # Função para adicionar arquivos
 def add_files():
